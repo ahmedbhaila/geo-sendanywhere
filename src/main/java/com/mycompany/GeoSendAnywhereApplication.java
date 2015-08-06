@@ -1,9 +1,12 @@
 package com.mycompany;
 
+import java.io.File;
 import java.net.URI;
+import java.net.URL;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -12,10 +15,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.client.RestTemplate;
-
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
-import redis.clients.jedis.Protocol;
 
 @SpringBootApplication
 @EnableAsync
@@ -70,10 +69,11 @@ public class GeoSendAnywhereApplication {
 	}
 
 	@PostConstruct
-	public void init() {
+	public void init() throws Exception {
 		// sendAnywhereService().transferFile("testProfile");
 		// System.out.println("File transfer started");
 		// googlePlacesService().getPlacesData("41.969651,-87.742525");
+		FileUtils.copyURLToFile(new URL("http://bangkok.grand.hyatt.com/content/dam/PropertyWebsites/grandhyatt/bangh/Media/All/Grand-Hyatt-Erawan-Bangkok-Grand-King-Bedroom-1280x427.jpg"), new File("image.jpg"));
 	}
 
 	public static void main(String[] args) {
