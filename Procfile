@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT -jar target/geosendanywhere-0.0.1-SNAPSHOT.jar
+web: java -Dserver.port=$PORT -jar target/geosendanywhereg-0.0.1-SNAPSHOT.jar
