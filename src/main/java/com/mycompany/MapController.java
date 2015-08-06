@@ -1,10 +1,20 @@
 package com.mycompany;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
+import javax.servlet.ServletContext;
 import javax.websocket.server.PathParam;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,6 +56,9 @@ class HelloWorld {
 public class MapController {
 	
 	@Autowired
+	ServletContext servletContext;
+	
+	@Autowired
 	GooglePlacesService placesService;
 	
 	@Autowired
@@ -84,5 +97,12 @@ public class MapController {
 	@ResponseBody
 	public String getDocument(@PathVariable("place_id") String placeId) {
 		return geoDocService.getAssociatedDoc(placeId);
+	}
+	
+	@RequestMapping("/download")
+	public ResponseEntity<InputStreamResource> testphoto() throws IOException {
+		InputStreamResource inputStream = new InputStreamResource(new FileInputStream("image.jpg"));
+
+	   return ResponseEntity.ok(inputStream);
 	}
 }
