@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+	<link rel="stylesheet" href="http://demos.jquerymobile.com/1.4.5/css/themes/default/jquery.mobile-1.4.5.min.css">
+	<link rel="stylesheet" href="http://demos.jquerymobile.com/1.4.5/_assets/css/jqm-demos.css">
+	
+	<script src="http://demos.jquerymobile.com/1.4.5/js/jquery.js"></script>
+	<script src="http://demos.jquerymobile.com/1.4.5/_assets/js/index.js"></script>
+	<script src="http://demos.jquerymobile.com/1.4.5/js/jquery.mobile-1.4.5.min.js"></script>
+	
+	<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
+	
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Send Anywhere</title>
+	
+<style>
+	#map-page, #map-canvas { width: 100%; height: 100%; padding: 0; }
+</style>
+
+<script type="text/javascript">
+
+
+	var map;
+	var infowindow;
+	var markers = [];
+
+
+	$( document ).on( "pageinit", "#map-page", function() {
+	    var defaultLatLng = new google.maps.LatLng(-33.8665433, 151.1956316);
+
+	    
+	    drawMap(defaultLatLng);  // No geolocation support, show default map
+	    
+	    function drawMap(latlng) {
+	        var myOptions = {
+	            zoom: 15,
+	            center: latlng,
+	            mapTypeId: google.maps.MapTypeId.ROADMAP
+	        };
+	        map = new google.maps.Map(document.getElementById("map-canvas"), myOptions);
+	       
+	 		getPlaces(map.getCenter());
+			
+	 		//google.maps.event.addListener(map, 'center_changed', function() {
+	 		google.maps.event.addListener(map, 'dragend', function() {
+	 		    console.log(map.getCenter());
+	 		    getPlaces(map.getCenter());
+	 		});
+			
+	 		google.maps.event.addListener(map, 'zoom_changed', function() {
+	 		    console.log(map.getCenter());
+	 		    getPlaces(map.getCenter());
+	 		});
+			
+			
+	    }
+	    
+
+		
+		function getPlaces(lat_lng)
+		{
+			var request = {
+					location : lat_lng,
+					radius : 50
+				};
+				infowindow = new google.maps.InfoWindow();
+				var service = new google.maps.places.PlacesService(map);
+				service.nearbySearch(request, callback);
+		}
+
+		function callback(results, status) {
+			clearAllMarkers();
+			if (status == google.maps.places.PlacesServiceStatus.OK) {
+				for (var i = 0; i < results.length; i++) {
+					createMarker(results[i]);
+				}
+			}
+		}
+
+		function createMarker(place) {
+			
+			var placeLoc = place.geometry.location;
+			var marker = new google.maps.Marker({
+				map : map,
+				position : place.geometry.location
+			});
+			
+			markers.push(marker);
+			
+			google.maps.event.addListener(marker, 'click', function() {
+				console.log(marker.getPosition());
+				console.log(place.place_id);
+				
+				//$.mobile.changePage( "#linkDialog", { role: "dialog" } );
+				
+				$( "#showPop" ).click();
+				
+				$("#placeName").val(place.name);
+				$("#inputFile").val("");
+				
+			  //$('#linkButton').unbind('click');
+				
+				$("#linkButton").click(function () {
+					var data = new Object();
+					data.placeId = $("#placeName").val();
+					data.fileLocation = $("#inputFile").val();
+					console.log(JSON.stringify(data));
+					
+				 	$.ajax({
+				            type: "POST",
+				            url: "/places/associate",
+				            contentType: "application/json; charset=utf-8",
+				            data: JSON.stringify(data),
+				            success: function () {
+				                alert("File Linked successfully !!! ");
+				                $(".ui-icon-delete").click();
+				            }
+				        });
+				   });
+				
+			});
+		}
+		
+		function clearAllMarkers(){
+			for (var i = 0; i < markers.length; i++) {
+			    markers[i].setMap(null);
+			  }
+		}
+		
+	});
+	
+</script>
+
+</head>
+
+<body>
+
+	<div data-url="map-page" data-role="page" id="map-page">
+<!-- 		<div data-role="header" data-theme="a"></div> -->
+		<div role="main" class="ui-content" id="map-canvas"></div>
+	</div>
+
+	<a href="#popup" class="ui-btn ui-shadow ui-corner-all" style="display: none" id="showPop" data-rel="dialog"
+		data-transition="pop"></a>
+
+	<div data-role="page" id="popup" data-close-btn="right">
+
+		<div data-role="header" data-theme="b">
+			<h1>Link File</h1>
+		</div>
+		<!-- /header -->
+
+		<div role="main" class="ui-content">
+
+			<label for="text-placename">Place Name:</label> <input
+				name="text-placename" id="placeName" value="" type="text" readonly>
+
+			<label for="text-filename">File URL:</label> <input
+				name="text-filename" id="inputFile" value="" type="text">
+
+		</div>
+		<!-- /content -->
+
+		<div data-role="footer" class="ui-field-contain">
+			<button class="ui-btn ui-cornor-all" id="linkButton">Link !</button>
+		</div>
+		<!-- /footer -->
+	</div>
+	<!-- /page popup -->
+
+</body>
+</html>
