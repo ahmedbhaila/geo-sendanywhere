@@ -7,19 +7,21 @@ import java.net.URL;
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.http.impl.client.HttpClients;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 @EnableAsync
 public class GeoSendAnywhereApplication {
-
+	
 	@Bean
 	public SendAnywhereService sendAnywhereService() {
 		return new SendAnywhereService();
@@ -29,12 +31,24 @@ public class GeoSendAnywhereApplication {
 	public GooglePlacesService googlePlacesService() {
 		return new GooglePlacesService();
 	}
+	
+	@Bean 
+	public HttpComponentsClientHttpRequestFactory clientFactory() {
+		HttpComponentsClientHttpRequestFactory http = new HttpComponentsClientHttpRequestFactory();
+		
+		http.setHttpClient(HttpClients.createMinimal());
+		http.setConnectTimeout(100000);
+		http.setConnectionRequestTimeout(100000);
+		http.setReadTimeout(100000);
+		return http;
+	}
 
 	@Bean
 	public RestTemplate restTemplate() {
-		return new RestTemplate();
+		//return new RestTemplate();
+		return new RestTemplate(clientFactory());
 	}
-
+	
 	@Bean
 	public JedisConnectionFactory jedisConnectionFactory() throws Exception {
 		URI redisUri = new URI(System.getenv("REDISCLOUD_URL"));

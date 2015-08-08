@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -64,6 +65,9 @@ public class MapController {
 	@Autowired
 	GeoDocService geoDocService;
 	
+	@Autowired
+	SendAnywhereService sendAnywhereService;
+	
 	@RequestMapping("/test")
 	@ResponseBody
 	public String test() {
@@ -89,7 +93,7 @@ public class MapController {
 	
 	@RequestMapping("/places/associate")
 	@ResponseStatus(org.springframework.http.HttpStatus.CREATED)
-	public void addRoute(@RequestBody PlaceAssociation placeAssociation) {
+	public void associateDoc(@RequestBody PlaceAssociation placeAssociation) {
 		geoDocService.associateDoc(placeAssociation.getPlaceId(), placeAssociation.getFileLocation());
 	}
 	
@@ -99,10 +103,22 @@ public class MapController {
 		return geoDocService.getAssociatedDoc(placeId);
 	}
 	
+	// TODO: remove after testing
 	@RequestMapping("/download")
 	public ResponseEntity<InputStreamResource> testphoto() throws IOException {
 		InputStreamResource inputStream = new InputStreamResource(new FileInputStream("image.jpg"));
 
 	   return ResponseEntity.ok(inputStream);
+	}
+	
+	@RequestMapping("/places/{lat_lng:.+}/document/status")
+	public boolean hasDocument(@PathVariable("lat_lng") String latLng, @RequestParam("profile") String profileName) {
+		return geoDocService.findDocument(profileName, latLng);
+	}
+	
+	@RequestMapping("/places/{client_id}/documents")
+	@ResponseBody
+	public List<String> getDocuments(@PathVariable("client_id") String clientId) {
+		return sendAnywhereService.fileTransferMap.get(clientId);
 	}
 }
