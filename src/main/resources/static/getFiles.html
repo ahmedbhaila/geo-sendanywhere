@@ -61,9 +61,38 @@ html, body, #map-canvas {
 			zoom : 15
 		});
 		
+		infowindow = new google.maps.InfoWindow();
+		
+// 		//<!--
+// 		getPlaces(lat_lng);
+		
+// 		google.maps.event.addListener(map, 'dragend', function() {
+// 		    console.log(map.getCenter());
+// 		    getPlaces(map.getCenter());
+// 		});
+		
+// 		google.maps.event.addListener(map, 'zoom_changed', function() {
+// 		    console.log(map.getCenter());
+// 		    getPlaces(map.getCenter());
+// 		});
+		
+// 		// -->
+		
+		//uncomment the below statement and comment the above javascript between <!-- --> to see how it will look like
 		createMarker(lat_lng);
+		
 	}
 		
+	function getPlaces(lat_lng)
+	{
+		var request = {
+				location : lat_lng,
+				radius : 50
+			};
+			var service = new google.maps.places.PlacesService(map);
+			service.nearbySearch(request, callback);
+	}
+	
 	function getPDocuments(lat_lng)
 	{
 		var request = {
@@ -78,11 +107,22 @@ html, body, #map-canvas {
 		clearAllMarkers();
 		if (status == google.maps.places.PlacesServiceStatus.OK) {
 			for (var i = 0; i < results.length; i++) {
-				createMarker(results[i]);
+				//createMarker(results[i]);
+				getLinkedDocuments(results[i]);
 			}
 		}
 	}
 
+	function getLinkedDocuments(place){
+		
+		var url = "/places/"+place.place_id+"/document";
+		$.get( url, function( data ) {
+				console.log(data);
+				//
+				createMarker(place.geometry.location)
+			});
+	}
+	
 	function createMarker(lat_lng) {
 		
 		var image = 'images/doc-icon.png';
@@ -96,8 +136,6 @@ html, body, #map-canvas {
 		
 		google.maps.event.addListener(marker, 'click', function() {
 			console.log(marker.getPosition());
-			
-			infowindow = new google.maps.InfoWindow();
 			
 			$("#inputFile").val("Temporary File Name");
 			infowindow.setContent($("#linkModal").html());
