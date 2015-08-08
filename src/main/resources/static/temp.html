@@ -98,14 +98,14 @@
 				
 				$( "#showPop" ).click();
 				
-				$("#placeName").val(place.name);
+				$("#placeId").val(place.id);
 				$("#inputFile").val("");
 				
 			  //$('#linkButton').unbind('click');
 				
 				$("#linkButton").click(function () {
 					var data = new Object();
-					data.placeId = $("#placeName").val();
+					data.placeId = $("#placeId").val();
 					data.fileLocation = $("#inputFile").val();
 					console.log(JSON.stringify(data));
 					
@@ -160,6 +160,8 @@
 
 			<label for="text-filename">File URL:</label> <input
 				name="text-filename" id="inputFile" value="" type="text">
+				
+			<input name="text-placeid" id="placeId" type="hidden">
 
 		</div>
 		<!-- /content -->

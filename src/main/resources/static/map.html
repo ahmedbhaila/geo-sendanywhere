@@ -120,12 +120,13 @@ html, body, #map-canvas {
 		    infowindow.open(map, this);
 		    
 		    $("#placeName").val(place.name);
+		    $("#placeId").val(place.id);
 			
 		  //$('#linkButton').unbind('click');
 			
 			$("#linkButton").click(function () {
 				var data = new Object();
-				data.placeId = $("#placeName").val();
+				data.placeId = $("#placeId").val();
 				data.fileLocation = $("#inputFile").val();
 				console.log(JSON.stringify(data));
 				
@@ -169,6 +170,7 @@ html, body, #map-canvas {
 
 				<label for="placeName" class="sr-only">Password</label> 
 				<input type="text" id="placeName" readonly="readonly" class="form-control" placeholder="Place Name">
+				<input type="hidden" id="placeId" readonly="readonly" class="form-control">
 
 				<label for="inputFile" class="sr-only">File Path</label> 
 				<input type="text" id="inputFile" class="form-control" placeholder="File Path" required autofocus> 
