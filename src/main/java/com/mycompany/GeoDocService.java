@@ -1,7 +1,7 @@
 package com.mycompany;
 
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +30,10 @@ public class GeoDocService {
 	
 	public boolean findDocument(String profileName, String latLng) {
 		boolean docsFound = false;
-		List<PlacesResults> results = placeService.getPlacesData(latLng);
-		List<String> docs = results.stream().filter(Objects::nonNull).map(result -> getAssociatedDoc(result.getId())).collect(Collectors.toList());
-		if(docs.size() != 0) {
+		Set<PlacesResults> results = placeService.getPlacesData(latLng);
+		Set<String> docs = results.stream().filter(Objects::nonNull).map(result -> getAssociatedDoc(result.getId())).collect(Collectors.toSet());
+		docs = docs.stream().filter(Objects::nonNull).collect(Collectors.toSet());
+		if(docs.size() != 0 && !docs.contains(null)) {
 			docsFound = true;
 			// start async process for these files to be downloaded
 			docs.stream().filter(Objects::nonNull).forEach(doc -> {sendAnywhereService.prepareTransfer(profileName, doc); 

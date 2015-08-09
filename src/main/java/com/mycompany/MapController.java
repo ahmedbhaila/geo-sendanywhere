@@ -2,18 +2,13 @@ package com.mycompany;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.ServletContext;
-import javax.websocket.server.PathParam;
 
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -87,7 +82,7 @@ public class MapController {
 	
 	@RequestMapping("/places/{lat_lng:.+}")
 	@ResponseBody
-	public List<PlacesResults> getPlaces(@PathVariable("lat_lng") String latLng) {
+	public Set<PlacesResults> getPlaces(@PathVariable("lat_lng") String latLng) {
 		return placesService.getPlacesData(latLng);
 	}
 	
@@ -116,7 +111,7 @@ public class MapController {
 		return geoDocService.findDocument(profileName, latLng);
 	}
 	
-	@RequestMapping("/places/{client_id}/documents")
+	@RequestMapping("/places/{client_id:.+}/documents")
 	@ResponseBody
 	public List<String> getDocuments(@PathVariable("client_id") String clientId) {
 		return sendAnywhereService.fileTransferMap.get(clientId);
