@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="js/test.js"></script>
+
+ 
+<!-- <link rel="stylesheet" href="https://code.jquery.com/mobile/git/jquery.mobile-git.min.css" /> -->
+<!-- <script src="https://code.jquery.com/mobile/git/jquery.mobile-git.min.js"></script> -->
+ 
+
+<script src="https://code.jquery.com/jquery-git2.min.js"></script>
+
+ 
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+<!-- google map API -->
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
+
+
+<link href="css/test.css"></link>
+
+
+<title>Send Anywhere</title>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+<meta charset="utf-8">
+
+<style>
+html, body, #map-canvas {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+#map-page, #map-canvas { width: 100%; height: 100%; padding: 0; }
+.icon-download{
+	background-image:"images/downloads.png";
+}
+</style>
+
+
+<script type="text/javascript">
+
+
+	var map;
+	var infowindow;
+	var markers = [];
+	
+	function initialize() {
+		
+		var lat_lng = new google.maps.LatLng(-33.8665433, 151.1956316); // lat,lng would be set from associated place
+
+		map = new google.maps.Map(document.getElementById('map-canvas'), {
+			center : lat_lng,
+			zoom : 15
+		});
+		
+		infowindow = new google.maps.InfoWindow();
+		
+// 		//<!--
+// 		getPlaces(lat_lng);
+		
+// 		google.maps.event.addListener(map, 'dragend', function() {
+// 		    console.log(map.getCenter());
+// 		    getPlaces(map.getCenter());
+// 		});
+		
+// 		google.maps.event.addListener(map, 'zoom_changed', function() {
+// 		    console.log(map.getCenter());
+// 		    getPlaces(map.getCenter());
+// 		});
+		
+// 		// -->
+		
+		//uncomment the below statement and comment the above javascript between <!-- --> to see how it will look like
+		createMarker(lat_lng);
+		
+	}
+		
+	function getPlaces(lat_lng)
+	{
+		var request = {
+				location : lat_lng,
+				radius : 50
+			};
+			var service = new google.maps.places.PlacesService(map);
+			service.nearbySearch(request, callback);
+	}
+	
+	function getPDocuments(lat_lng)
+	{
+		var request = {
+				location : lat_lng,
+				radius : 50
+			};
+		
+			//service.nearbySearch(request, callback);
+	}
+
+	function callback(results, status) {
+		clearAllMarkers();
+		if (status == google.maps.places.PlacesServiceStatus.OK) {
+			for (var i = 0; i < results.length; i++) {
+				//createMarker(results[i]);
+				getLinkedDocuments(results[i]);
+			}
+		}
+	}
+
+	function getLinkedDocuments(place){
+		
+		var url = "/places/"+place.place_id+"/document";
+		$.get( url, function( data ) {
+				console.log(data);
+				//
+				createMarker(place.geometry.location)
+			});
+	}
+	
+	function createMarker(lat_lng) {
+		
+		var image = 'images/doc-icon.png';
+		var marker = new google.maps.Marker({
+			map : map,
+			position : lat_lng,
+			icon:image
+		});
+		
+		markers.push(marker);
+		
+		google.maps.event.addListener(marker, 'click', function() {
+			console.log(marker.getPosition());
+			
+			$("#inputFile").val("Temporary File Name");
+			infowindow.setContent($("#linkModal").html());
+		    infowindow.open(map, this);
+		    
+// 		    $("#inputFile").val(place.name);
+// 		    $("#placeId").val(place.id);
+			
+// 		  //$('#linkButton').unbind('click');
+			
+// 			$("#linkButton").click(function () {
+// 				var data = new Object();
+// 				data.placeId = $("#placeId").val();
+// 				data.fileLocation = $("#inputFile").val();
+// 				console.log(JSON.stringify(data));
+				
+// 			 	$.ajax({
+// 			            type: "POST",
+// 			            url: "/places/associate",
+// 			            contentType: "application/json; charset=utf-8",
+// 			            data: JSON.stringify(data),
+// 			            success: function () {
+// 			                alert("File Linked successfully !!! ");
+// 			                infowindow.close();
+// 			            }
+// 			        });
+// 			   });
+			
+		});
+	}
+	
+	function clearAllMarkers(){
+		for (var i = 0; i < markers.length; i++) {
+		    markers[i].setMap(null);
+		  }
+	}
+
+	google.maps.event.addDomListener(window, 'load', initialize);
+	
+	 
+	
+
+	
+</script>
+</head>
+<body>
+
+	<div id="map-canvas"></div>
+
+	<div class="modal fade bs-example-modal-sm" id="linkModal"
+		tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				
+				<div class="list-group">
+				  <a href="#" class="list-group-item">Download from Gulshan</a>
+				  <a href="#" class="list-group-item">Download from KFC</a>
+				  <a href="#" class="list-group-item">Download from UBL</a>
+				  <a href="#" class="list-group-item">Download from MCB</a>
+				  <a href="#" class="list-group-item">Download from Dolmen</a>
+				</div>
+
+				<!-- <div class="btn-group-vertical" role="group">
+					
+				
+					<div class="alert alert-info" style="margin-bottom:0">
+					  <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>Download File From Gulshan
+					</div>
+					<div class="alert alert-info" style="margin-bottom:0">
+					  <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>Download File From KFC
+					</div>
+					<div class="alert alert-info" style="margin-bottom:0">
+					  <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>Download File From Dolmen
+					</div>					
+				</div> -->
+				
+			</div>
+		</div>
+	</div>
+
+
+</body>
+</html>
