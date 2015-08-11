@@ -29,6 +29,9 @@ public class SendAnywhereService {
 	@Autowired
 	RestTemplate restTemplate;
 	
+	@Autowired
+	DocumentMapStore mapStore;
+	
 	
 	//public static Map<String, List<String>> fileTransferMap = new HashMap<String, List<String>>();
 
@@ -90,8 +93,11 @@ public class SendAnywhereService {
 		
 		// Post
 		String result = restTemplate.postForObject(key.getBody().getWebLink(), parts, String.class);
-		
 		System.out.println("Result is " + result);
+		
+		// remove document from the list
+		System.out.println("Removing document from list");
+		mapStore.documentMap.get(profileName).getDocument().remove(document);
 		return new AsyncResult<String>(result);
 		
 	}
