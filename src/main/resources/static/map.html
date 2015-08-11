@@ -136,7 +136,7 @@ html, body, #map-canvas {
 			            contentType: "application/json; charset=utf-8",
 			            data: JSON.stringify(data),
 			            success: function () {
-			                alert("File Linked successfully !!! ");
+			                //alert("File Linked successfully !!! ");
 			                infowindow.close();
 			            }
 			        });
@@ -163,6 +163,9 @@ html, body, #map-canvas {
 	<div class="modal fade bs-example-modal-sm" id="linkModal"
 		tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
 		<div class="modal-dialog modal-sm">
+		    <div class="modal-header-sm">
+              <h4 class="modal-title">Associate File</h4>
+            </div>
 			<div class="modal-content">
 
 				<label for="placeName" class="sr-only">Password</label> 
