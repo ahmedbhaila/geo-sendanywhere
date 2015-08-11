@@ -1,7 +1,12 @@
 package com.mycompany;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,29 +23,62 @@ public class GeoDocService {
 	@Autowired
 	SendAnywhereService sendAnywhereService;
 	
+	@Autowired
+	DocumentMapStore documentStoreMap;
+	
 	
 	public void associateDoc(String placeId, String fileLocation) {
 		redisTemplate.opsForValue().set(placeId, fileLocation);
 	}
 	
-	public String getAssociatedDoc(String placeId) {
-		return redisTemplate.opsForValue().get(placeId);
+	public DocumentDetail getAssociatedDoc(PlacesResults result, String timeInMillis, String timeZone) {
+		String document = redisTemplate.opsForValue().get(result.getId());
+		DocumentDetail docDetail = null;
+		if(document != null && !document.equals("null")) {
+			docDetail = new DocumentDetail();
+			docDetail.setName(document);
+			docDetail.setPlaceId(result.getId());
+			docDetail.setPlaceName(result.getName());
+			docDetail.setTime(timeInMillis);
+			docDetail.setTimeZone(timeZone);
+
+		}
+		else{
+			docDetail = null;
+		}
+		return docDetail;
 		//return "image.jpg";
 	}
 	
-	public boolean findDocument(String profileName, String latLng) {
+	public boolean findDocument(String profileName, String latlng, String timeInMillis, String timeZone) {
 		boolean docsFound = false;
-		Set<PlacesResults> results = placeService.getPlacesData(latLng);
-		Set<String> docs = results.stream().filter(Objects::nonNull).map(result -> getAssociatedDoc(result.getId())).collect(Collectors.toSet());
+		Set<PlacesResults> results = placeService.getPlacesData(latlng);
+		Set<DocumentDetail> docs = results.stream().filter(Objects::nonNull).map(result -> getAssociatedDoc(result, timeInMillis, timeZone)).collect(Collectors.toSet());
 		docs = docs.stream().filter(Objects::nonNull).collect(Collectors.toSet());
 		if(docs.size() != 0 && !docs.contains(null)) {
+			setupDocumentMap(profileName,latlng, docs);
 			docsFound = true;
 			// start async process for these files to be downloaded
 			docs.stream().filter(Objects::nonNull).forEach(doc -> {sendAnywhereService.prepareTransfer(profileName, doc); 
 				//sendAnywhereService.setupReceive(sendAnywhereService.test.split("@")[0], sendAnywhereService.test.split("@")[0]);
 				});	
+			
 		}
-		System.out.println(" I am out of there");
+		
 		return docsFound;
+	}
+	
+	private void setupDocumentMap(String profile, String latlng, Set<DocumentDetail> documentDetails) {
+		if(!documentStoreMap.getDocumentMap().containsKey(profile)) {
+			DocumentResult docResult = new DocumentResult();
+			docResult.setClientLocation(latlng);
+			//new TreeSet<DocumentResult>(
+			docResult.setDocument(documentDetails);
+			documentStoreMap.getDocumentMap().put(profile, docResult);
+		}
+		else {
+			documentStoreMap.getDocumentMap().get(profile).setClientLocation(latlng);
+			documentStoreMap.getDocumentMap().get(profile).getDocument().addAll(documentDetails);
+		}
 	}
 }

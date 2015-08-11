@@ -3,6 +3,10 @@ package com.mycompany;
 import java.io.File;
 import java.net.URI;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
@@ -21,6 +25,13 @@ import org.springframework.web.client.RestTemplate;
 @SpringBootApplication
 @EnableAsync
 public class GeoSendAnywhereApplication {
+	
+	
+	@Bean
+	public DocumentMapStore documentMapStore() {
+		return new DocumentMapStore();
+	}
+	
 	
 	@Bean
 	public SendAnywhereService sendAnywhereService() {

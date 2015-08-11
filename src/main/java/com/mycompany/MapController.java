@@ -3,6 +3,7 @@ package com.mycompany;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.ServletContext;
@@ -63,6 +64,10 @@ public class MapController {
 	@Autowired
 	SendAnywhereService sendAnywhereService;
 	
+	@Autowired
+	DocumentMapStore documentMapStore;
+	
+	
 	@RequestMapping("/test")
 	@ResponseBody
 	public String test() {
@@ -92,11 +97,11 @@ public class MapController {
 		geoDocService.associateDoc(placeAssociation.getPlaceId(), placeAssociation.getFileLocation());
 	}
 	
-	@RequestMapping("/places/{place_id}/document")
-	@ResponseBody
-	public String getDocument(@PathVariable("place_id") String placeId) {
-		return geoDocService.getAssociatedDoc(placeId);
-	}
+//	@RequestMapping("/places/{place_id}/document")
+//	@ResponseBody
+//	public String getDocument(@PathVariable("place_id") String placeId) {
+//		return geoDocService.getAssociatedDoc(placeId);
+//	}
 	
 	// TODO: remove after testing
 	@RequestMapping("/download")
@@ -107,13 +112,14 @@ public class MapController {
 	}
 	
 	@RequestMapping("/places/{lat_lng:.+}/document/status")
-	public boolean hasDocument(@PathVariable("lat_lng") String latLng, @RequestParam("profile") String profileName) {
-		return geoDocService.findDocument(profileName, latLng);
+	public boolean hasDocument(@PathVariable("lat_lng") String latLng, @RequestParam("profile") String profileName,
+			@RequestParam("time") String timeInMillis, @RequestParam("timezone") String timeZone) {
+		return geoDocService.findDocument(profileName, latLng, timeInMillis, timeZone);
 	}
 	
 	@RequestMapping("/places/{client_id:.+}/documents")
 	@ResponseBody
-	public List<String> getDocuments(@PathVariable("client_id") String clientId) {
-		return sendAnywhereService.fileTransferMap.get(clientId);
+	public DocumentResult getDocuments(@PathVariable("client_id") String clientId) {
+		return documentMapStore.getDocumentMap().get(clientId);
 	}
 }
