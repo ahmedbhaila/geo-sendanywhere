@@ -88,8 +88,8 @@ html, body, #map-canvas {
 		var url = "/places/"+GetURLParameter('clientId')+"/documents";
 		$.get( url, function( data ) {
 				console.log(data);
-				var obj = $.parseJSON(data);
-				createMarker(obj)
+				//var obj = $.parseJSON(data);
+				createMarker(data)
 			});
 	}
 	
