@@ -48,9 +48,9 @@ public class GeoSendAnywhereApplication {
 		HttpComponentsClientHttpRequestFactory http = new HttpComponentsClientHttpRequestFactory();
 		
 		http.setHttpClient(HttpClients.createMinimal());
-		http.setConnectTimeout(100000);
-		http.setConnectionRequestTimeout(100000);
-		http.setReadTimeout(100000);
+		http.setConnectTimeout(0);
+		http.setConnectionRequestTimeout(0);
+		http.setReadTimeout(0);
 		return http;
 	}
 

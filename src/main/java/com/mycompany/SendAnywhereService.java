@@ -76,7 +76,12 @@ public class SendAnywhereService {
 //			System.out.println(e.getMessage());
 //		}
 		
-		document.setUrl(key.getBody().getLink());
+		if(key.getBody().getLink() != null) {
+			document.setUrl(key.getBody().getLink());
+		}
+		else {
+			
+		}
 		
 		
 		MultiValueMap<String, Object> parts = new LinkedMultiValueMap<String, Object>();
