@@ -119,7 +119,31 @@ public class MapController {
 	
 	@RequestMapping("/places/{client_id:.+}/documents")
 	@ResponseBody
-	public DocumentResult getDocuments(@PathVariable("client_id") String clientId) {
-		return documentMapStore.getDocumentMap().get(clientId);
+	public /*DocumentResult*/ String getDocuments(@PathVariable("client_id") String clientId) {
+		
+		//return documentMapStore.getDocumentMap().get(clientId);
+		return 
+				"{"+
+				"\"clientLocation\": \"41.969388,-87.741871\","+
+				"\"document\": "+
+				"["+
+				"{"+
+				"\"name\": \"image.jpg\","+
+				"\"placeId\": \"3d9b432e531aa2d62e4d42bc00431e2fb54d4937\","+
+				"\"placeName\": \"Sokol Community Hall\","+
+				"\"time\": \"1439258521\","+
+				"\"timeZone\": \"CST\","+
+				"\"url\": \"http://eoq.kr/345329\""+
+				"},"+
+				"{"+
+				"\"name\": \"image.jpg\","+
+				"\"placeId\": \"c0a3370cef8cf6e028f743f3c51faa881785835c\","+
+				"\"placeName\": \"Candace Dance\","+
+				"\"time\": \"1439258521\","+
+				"\"timeZone\": \"CST\","+
+				"\"url\": \"http://eoq.kr/354675\""+
+				"}"+
+				"]"+
+				"}";
 	}
 }
