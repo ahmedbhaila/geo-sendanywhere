@@ -60,7 +60,7 @@ public class GeoDocService {
 			docs.stream().filter(Objects::nonNull).forEach(doc -> sendAnywhereService.prepareTransfer(profileName, doc));
 		}
 		if(docs.size() != 0) {
-			return documentStoreMap.getDocumentMap().get(profileName).getDocument().size() > 0;
+			return documentStoreMap.getDocumentMap().get(profileName).getDocumentDetail().size() > 0;
 		}
 		else {
 			return false;
@@ -72,12 +72,12 @@ public class GeoDocService {
 		if(!documentStoreMap.getDocumentMap().containsKey(profile)) {
 			DocumentResult docResult = new DocumentResult();
 			docResult.setClientLocation(latlng);
-			docResult.setDocument(documentDetails);
+			docResult.setDocumentDetail(documentDetails);
 			documentStoreMap.getDocumentMap().put(profile, docResult);
 		}
 		else {
 			documentStoreMap.getDocumentMap().get(profile).setClientLocation(latlng);
-			documentStoreMap.getDocumentMap().get(profile).getDocument().addAll(documentDetails);
+			documentStoreMap.getDocumentMap().get(profile).getDocumentDetail().addAll(documentDetails);
 		}
 	}
 }

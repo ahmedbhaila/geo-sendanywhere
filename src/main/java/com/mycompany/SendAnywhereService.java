@@ -2,6 +2,7 @@ package com.mycompany;
 
 import java.util.List;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,10 +38,11 @@ public class SendAnywhereService {
 
 	public String test;
 	
-	@Async
-	public Future<String> prepareTransfer(String profileName, DocumentDetail document) {
+	//@Async
+	//public Future<String> prepareTransfer(String profileName, DocumentDetail document) {
 		
-		
+	public void prepareTransfer(String profileName, DocumentDetail document) {
+				
 		
 		HttpEntity<String> response = restTemplate.exchange(GET_DEVICE_KEY_URL, HttpMethod.GET, null, String.class, apiKey, profileName);
 		
@@ -78,11 +80,15 @@ public class SendAnywhereService {
 //		catch(Exception e) {
 //			System.out.println(e.getMessage());
 //		}
+		
+		
+		
 		String result = null;
 		if(key.getBody().getLink() != null) {
 			document.setUrl(key.getBody().getLink());
+			document.setWebLink(key.getBody().getWebLink());
 			
-			MultiValueMap<String, Object> parts = new LinkedMultiValueMap<String, Object>();
+			/*MultiValueMap<String, Object> parts = new LinkedMultiValueMap<String, Object>();
 			parts.add("file", new FileSystemResource(document.getName()));
 			
 			
@@ -92,12 +98,30 @@ public class SendAnywhereService {
 			
 			// remove document from the list
 			System.out.println("Removing document from list");
-			mapStore.documentMap.get(profileName).getDocument().remove(document);
+			mapStore.documentMap.get(profileName).getDocumentDetail().remove(document);*/
 		}
 		else {
 			// delete this entry since SendAnywhere didnt respond with a link
-			mapStore.documentMap.get(profileName).getDocument().remove(document);
+			mapStore.documentMap.get(profileName).getDocumentDetail().remove(document);
 		}
-		return new AsyncResult<String>(result);		
+		//return new AsyncResult<String>(result);		
+	}
+	
+	@Async
+	public Future<String> startTransfer(String profileName, String transferURL, String name) {
+		MultiValueMap<String, Object> parts = new LinkedMultiValueMap<String, Object>();
+		parts.add("file", new FileSystemResource(name));
+		
+		
+		// Post
+		String result = restTemplate.postForObject(transferURL, parts, String.class);
+		System.out.println("Result is " + result);
+		
+		// remove document from the list
+		System.out.println("Removing document from list");
+		DocumentResult docs = mapStore.documentMap.get(profileName);
+		docs.setDocumentDetail(docs.getDocumentDetail().stream().filter(d -> !d.getUrl().equals(transferURL)).collect(Collectors.toSet()));
+		
+		return new AsyncResult<String>(result);
 	}
 }

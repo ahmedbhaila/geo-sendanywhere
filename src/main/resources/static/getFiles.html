@@ -52,6 +52,44 @@ html, body, #map-canvas {
 	var infowindow;
 	var markers = [];
 	
+	$(function(){
+        $('.doclinks').on('click', function(){
+        	alert("Hello world");
+            var $this = $(this);
+            var p1 = $this.data('doc-name');
+            var p2 = $this.data('doc-url');
+            var p3 = $this.data('doc-client');
+            
+            console.log("Data is " + p1 + " " + p2 + " " + p3);
+        });
+        
+        $('body').on('click', 'a.doclinks', function() {
+        	alert('Hello');
+        	var $this = $(this);
+            var docname = $this.data('doc-name');
+            var docurl = $this.data('doc-url');
+            var docclient = $this.data('doc-client');
+            
+            console.log("Data is " + docname + " " + docurl + " " + docclient);
+            
+            
+            var url = "/places/"+GetURLParameter('clientId')+"/transfer?transferURL=" + docurl + "&fileName=" + docname;
+            console.log("URL is " + url);
+            
+            $.get( url, function( data ) {
+				
+    		});
+            
+            setTimeout(function(){
+            	$(location).attr('href', docurl);
+            }, 10000);
+    		
+    		
+    		
+    		
+        });
+    });
+	
 	function initialize() {
 		
 		var lat_lng = new google.maps.LatLng(41.969388,-87.741871); // lat,lng would be set from associated place
@@ -107,8 +145,12 @@ html, body, #map-canvas {
 		markers.push(marker);
 		
 		$(".list-group").empty();
-		$.each(obj.document, function(i,doc){
-			$(".list-group").append("<a href="+doc.url+" class='list-group-item' target='_blank'>"+doc.name+"</a>");
+		$.each(obj.documentDetail, function(i,doc){
+			//$(".list-group").append("<a href="+doc.url+" class='list-group-item' target='_blank'>"+doc.name+"</a>");
+			var mylink = "<a class='doclinks list-group-item' target='_blank' data-doc-name=" + doc.name + " data-doc-url=" + doc.webLink + " data-doc-client=" + GetURLParameter('clientId') + ">"+doc.name+"</a>";
+			console.log("My link is " + mylink);
+			//$(".list-group").append("<a href='#' class='doclinks list-group-item' target='_blank' data-doc-name=" + doc.name + " + data-doc-url=" + doc.webLink + " + data-client=" + GetURLParameter('clientId') + ">"+doc.name+"</a>");
+			$(".list-group").append(mylink);
 		});
 		
 		

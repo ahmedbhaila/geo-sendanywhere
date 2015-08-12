@@ -7,7 +7,14 @@ public class DocumentDetail {
 	private String time;
 	private String timeZone;
 	private String url;
+	private String webLink;
 	
+	public String getWebLink() {
+		return webLink;
+	}
+	public void setWebLink(String webLink) {
+		this.webLink = webLink;
+	}
 	public String getUrl() {
 		return url;
 	}
