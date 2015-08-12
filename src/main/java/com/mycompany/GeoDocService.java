@@ -51,28 +51,27 @@ public class GeoDocService {
 	}
 	
 	public boolean findDocument(String profileName, String latlng, String timeInMillis, String timeZone) {
-		boolean docsFound = false;
 		Set<PlacesResults> results = placeService.getPlacesData(latlng);
 		Set<DocumentDetail> docs = results.stream().filter(Objects::nonNull).map(result -> getAssociatedDoc(result, timeInMillis, timeZone)).collect(Collectors.toSet());
 		docs = docs.stream().filter(Objects::nonNull).collect(Collectors.toSet());
 		if(docs.size() != 0 && !docs.contains(null)) {
 			setupDocumentMap(profileName,latlng, docs);
-			docsFound = true;
 			// start async process for these files to be downloaded
-			docs.stream().filter(Objects::nonNull).forEach(doc -> {sendAnywhereService.prepareTransfer(profileName, doc); 
-				//sendAnywhereService.setupReceive(sendAnywhereService.test.split("@")[0], sendAnywhereService.test.split("@")[0]);
-				});	
-			
+			docs.stream().filter(Objects::nonNull).forEach(doc -> sendAnywhereService.prepareTransfer(profileName, doc));
+		}
+		if(docs.size() != 0) {
+			return documentStoreMap.getDocumentMap().get(profileName).getDocument().size() > 0;
+		}
+		else {
+			return false;
 		}
 		
-		return docsFound;
 	}
 	
 	private void setupDocumentMap(String profile, String latlng, Set<DocumentDetail> documentDetails) {
 		if(!documentStoreMap.getDocumentMap().containsKey(profile)) {
 			DocumentResult docResult = new DocumentResult();
 			docResult.setClientLocation(latlng);
-			//new TreeSet<DocumentResult>(
 			docResult.setDocument(documentDetails);
 			documentStoreMap.getDocumentMap().put(profile, docResult);
 		}

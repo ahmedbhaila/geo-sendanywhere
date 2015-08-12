@@ -78,27 +78,26 @@ public class SendAnywhereService {
 //		catch(Exception e) {
 //			System.out.println(e.getMessage());
 //		}
-		
+		String result = null;
 		if(key.getBody().getLink() != null) {
 			document.setUrl(key.getBody().getLink());
+			
+			MultiValueMap<String, Object> parts = new LinkedMultiValueMap<String, Object>();
+			parts.add("file", new FileSystemResource(document.getName()));
+			
+			
+			// Post
+			result = restTemplate.postForObject(key.getBody().getWebLink(), parts, String.class);
+			System.out.println("Result is " + result);
+			
+			// remove document from the list
+			System.out.println("Removing document from list");
+			mapStore.documentMap.get(profileName).getDocument().remove(document);
 		}
 		else {
-			
+			// delete this entry since SendAnywhere didnt respond with a link
+			mapStore.documentMap.get(profileName).getDocument().remove(document);
 		}
-		
-		
-		MultiValueMap<String, Object> parts = new LinkedMultiValueMap<String, Object>();
-		parts.add("file", new FileSystemResource(document.getName()));
-		
-		
-		// Post
-		String result = restTemplate.postForObject(key.getBody().getWebLink(), parts, String.class);
-		System.out.println("Result is " + result);
-		
-		// remove document from the list
-		System.out.println("Removing document from list");
-		mapStore.documentMap.get(profileName).getDocument().remove(document);
-		return new AsyncResult<String>(result);
-		
+		return new AsyncResult<String>(result);		
 	}
 }
