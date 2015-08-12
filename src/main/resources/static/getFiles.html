@@ -196,9 +196,29 @@ html, body, #map-canvas {
 </script>
 </head>
 <body>
+	<nav class="navbar navbar-inverse navbar-static-top" role="navigation">
+    <div class="container">
+    	<div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">GeoDocs</a>
+        </div>
 
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li><a href="index.php">Home</a></li>
+                <li><a href="about.php">About</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+	
 	<div id="map-canvas"></div>
-
 	<div class="modal fade bs-example-modal-sm" id="linkModal"
 		tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
 		<div class="modal-dialog modal-sm">
@@ -225,7 +245,14 @@ html, body, #map-canvas {
 			</div>
 		</div>
 	</div>
-
+<div id="footer" class="container">
+    <nav class="navbar navbar-default navbar-fixed-bottom"> 
+    <!--  class="navbar navbar-default navbar-fixed-bottom"> -->
+        <div class="navbar-inverse navbar-inner navbar-content-center">
+            <p class="lead text-info text-center">We found documents associated with these X locations</p>
+        </div>
+    </nav>
+</div>
 
 </body>
 </html>
