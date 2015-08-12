@@ -60,29 +60,30 @@ html, body, #map-canvas {
             var p2 = $this.data('doc-url');
             var p3 = $this.data('doc-client');
             
-            console.log("Data is " + p1 + " " + p2 + " " + p3);
+            //console.log("Data is " + p1 + " " + p2 + " " + p3);
         });
         
         $('body').on('click', 'a.doclinks', function() {
-        	alert('Hello');
         	var $this = $(this);
             var docname = $this.data('doc-name');
             var docurl = $this.data('doc-url');
             var docclient = $this.data('doc-client');
             
-            console.log("Data is " + docname + " " + docurl + " " + docclient);
+            //console.log("Data is " + docname + " " + docurl + " " + docclient);
             
             
             var url = "/places/"+GetURLParameter('clientId')+"/transfer?transferURL=" + docurl + "&fileName=" + docname;
-            console.log("URL is " + url);
+            //console.log("URL is " + url);
             
             $.get( url, function( data ) {
 				
     		});
             
-            setTimeout(function(){
-            	$(location).attr('href', docurl);
-            }, 10000);
+            $(location).attr('href', docurl);
+            
+//             setTimeout(function(){
+            	
+//             }, 10000);
     		
     		
     		

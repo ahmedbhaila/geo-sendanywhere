@@ -1,12 +1,7 @@
 package com.mycompany;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +36,7 @@ public class GeoDocService {
 			docDetail.setPlaceName(result.getName());
 			docDetail.setTime(timeInMillis);
 			docDetail.setTimeZone(timeZone);
+			docDetail.setLocation(result.getGeometry().getLocation().getLat() + "," + result.getGeometry().getLocation().getLng());
 
 		}
 		else{

@@ -8,7 +8,14 @@ public class DocumentDetail {
 	private String timeZone;
 	private String url;
 	private String webLink;
+	private String location;
 	
+	public String getLocation() {
+		return location;
+	}
+	public void setLocation(String location) {
+		this.location = location;
+	}
 	public String getWebLink() {
 		return webLink;
 	}

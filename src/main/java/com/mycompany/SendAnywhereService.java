@@ -120,7 +120,7 @@ public class SendAnywhereService {
 		// remove document from the list
 		System.out.println("Removing document from list");
 		DocumentResult docs = mapStore.documentMap.get(profileName);
-		docs.setDocumentDetail(docs.getDocumentDetail().stream().filter(d -> !d.getUrl().equals(transferURL)).collect(Collectors.toSet()));
+		docs.setDocumentDetail(docs.getDocumentDetail().stream().filter(d -> !d.getWebLink().equals(transferURL)).collect(Collectors.toSet()));
 		
 		return new AsyncResult<String>(result);
 	}
