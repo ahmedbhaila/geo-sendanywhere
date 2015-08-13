@@ -152,4 +152,9 @@ public class MapController {
 			@RequestParam("transferURL") String transferURL, @RequestParam("fileName") String fileName) {
 		sendAnywhereService.startTransfer(clientId, transferURL, fileName);
 	}
+	
+	@RequestMapping("/places/search/{address}") 
+	public Set<PlacesResults> startTransfer(@PathVariable("address") String address) {
+		return placesService.getPlacesDataFromAddress(address);
+	}
 }
