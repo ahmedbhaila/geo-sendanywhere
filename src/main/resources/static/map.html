@@ -92,21 +92,29 @@ html, body, #map-canvas {
 		
 	function getPlaces(lat_lng)
 	{
-		var request = {
-				location : lat_lng,
-				radius : 50
-			};
+		
+// 		var request = {
+// 				location : lat_lng,
+// 				radius : 50
+// 			};
+			
 			infowindow = new google.maps.InfoWindow();
-			var service = new google.maps.places.PlacesService(map);
-			service.nearbySearch(request, callback);
+			
+			
+			//var service = new google.maps.places.PlacesService(map);
+			//service.nearbySearch(request, callback);
+			
+			var url = "/places/"+lat_lng.lat()+","+lat_lng.lng();
+			$.get( url, function( data ) {
+					console.log(data);
+					callback(data)
+				});
 	}
 
-	function callback(results, status) {
+	function callback(results) {
 		clearAllMarkers();
-		if (status == google.maps.places.PlacesServiceStatus.OK) {
-			for (var i = 0; i < results.length; i++) {
-				createMarker(results[i]);
-			}
+		for (var i = 0; i < results.length; i++) {
+			createMarker(results[i]);
 		}
 	}
 
@@ -115,8 +123,12 @@ html, body, #map-canvas {
 		var placeLoc = place.geometry.location;
 		var marker = new google.maps.Marker({
 			map : map,
-			position : place.geometry.location
+			position : new google.maps.LatLng(place.geometry.location.lat,place.geometry.location.lng),
+			icon : "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
 		});
+		
+		if(place.associated)
+			marker.setIcon("http://maps.google.com/mapfiles/ms/icons/blue-dot.png");
 		
 		markers.push(marker);
 		
@@ -125,7 +137,8 @@ html, body, #map-canvas {
 			console.log(place.id);
 				
 			infowindow.setContent($("#linkModal").html());
-		    infowindow.open(map, this);
+			
+			infowindow.open(map, this);
 		    
 		    $("#placeName").val(place.name);
 		    $("#placeId").val(place.id);

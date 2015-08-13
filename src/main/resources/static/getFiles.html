@@ -24,6 +24,8 @@
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
 
 
+<script src="js/infobox.js"></script>
+
 <link href="css/test.css"></link>
 
 
@@ -142,7 +144,7 @@ html, body, #map-canvas {
 		documents = [];		
 		
 		var image = 'images/doc-icon.png';
-		
+		$("#doc_count").html(obj.documentDetail.length);
 		$.each(obj.documentDetail, function(i,doc){
 			var marker = new google.maps.Marker({
 				map : map,				
@@ -161,19 +163,23 @@ html, body, #map-canvas {
 			google.maps.event.addListener(marker, 'click', function() {
 				var doc = documents[marker.place.placeId];
 				var date = new Date(doc.time *1000);
-	 			$(".list-group").empty();
+	 			$("#list-group").empty();
 	 			var mylink = "<a class='doclinks list-group-item' target='_blank' data-doc-name=" + doc.name + " data-doc-url=" + doc.webLink + " data-doc-client=" + GetURLParameter('clientId') + ">"+
 	 					"Place: "+doc.placeName+"<br/>"+
 	 					"Document: "+doc.name+"<br/>"+
 	 					"Date: "+date.toDateString()+
 	 				"</a>";
 	 				
-	 			$(".list-group").append(mylink);
+	 			$("#list-group").append(mylink);
 				
 	 			$("#inputFile").val("Temporary File Name");
 	 			infowindow.setContent($("#linkModal").html());
-	 		    infowindow.open(map, this);
+
+
+	 			infowindow.open(map, this);
 				
+	 			$(".gm-style-iw").siblings().children(1).siblings(':nth-child(4)').css("background-color","#466B8F");
+	 			$(".gm-style-iw").siblings().children(1).siblings().css("border-radius","10px");
 			});
 			
 		});
@@ -233,37 +239,17 @@ html, body, #map-canvas {
 </nav>
 	
 	<div id="map-canvas"></div>
-	<div class="modal fade bs-example-modal-sm" id="linkModal"
-		tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
-		<div class="modal-dialog modal-sm">
-			<div class="modal-content">
-				
-				<div class="list-group">
-				 
-				</div>
-
-				<!-- <div class="btn-group-vertical" role="group">
-					
-				
-					<div class="alert alert-info" style="margin-bottom:0">
-					  <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>Download File From Gulshan
-					</div>
-					<div class="alert alert-info" style="margin-bottom:0">
-					  <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>Download File From KFC
-					</div>
-					<div class="alert alert-info" style="margin-bottom:0">
-					  <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>Download File From Dolmen
-					</div>					
-				</div> -->
-				
-			</div>
+	<div style="display:none;">
+		<div class="alert alert-warning " id = "linkModal">
+	  		<div id="list-group"> 
+			</div>				
 		</div>
 	</div>
 <div id="footer" class="container">
     <nav class="navbar navbar-default navbar-fixed-bottom"> 
     <!--  class="navbar navbar-default navbar-fixed-bottom"> -->
         <div class="navbar-inverse navbar-inner navbar-content-center">
-            <p class="lead text-info text-center">We found documents associated with these X locations</p>
+            <p class="lead text-info text-center">We found documents associated with these <strong id="doc_count"></strong> locations</p>
         </div>
     </nav>
 </div>
