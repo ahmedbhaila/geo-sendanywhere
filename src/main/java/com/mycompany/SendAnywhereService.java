@@ -1,9 +1,12 @@
 package com.mycompany;
 
+import java.io.File;
+import java.net.URL;
 import java.util.List;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
@@ -109,6 +112,15 @@ public class SendAnywhereService {
 	
 	@Async
 	public Future<String> startTransfer(String profileName, String transferURL, String name) {
+		try{
+			if(name.startsWith("http")) {
+				// download the file
+				FileUtils.copyURLToFile(new URL(name), new File(name));
+			}
+		}
+		catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
 		MultiValueMap<String, Object> parts = new LinkedMultiValueMap<String, Object>();
 		parts.add("file", new FileSystemResource(name));
 		

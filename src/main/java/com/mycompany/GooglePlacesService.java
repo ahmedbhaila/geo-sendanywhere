@@ -22,12 +22,16 @@ public class GooglePlacesService {
 	@Value("${google.place.api.search.radius}")
 	Integer searchRadius;
 	
+	@Autowired
+	GeoDocService geoDocService;
+	
 	public Set<PlacesResults> getPlacesData(String latLng) {
 		Set<PlacesResults> places = null;
 		ResponseEntity<GooglePlacesResults> results = restTemplate.getForEntity(GOOGLE_PLACES_API_URL, GooglePlacesResults.class, latLng, searchRadius, apiKey);
 		if(results.getStatusCode().equals(HttpStatus.OK)) {
 			places = new HashSet<PlacesResults>(results.getBody().getResults());
 		}
+		places.stream().forEach(p -> p.setAssociated(geoDocService.isDocAssiciated(p.getId()) == null ? false : true));
 		return places;
 	}
 }

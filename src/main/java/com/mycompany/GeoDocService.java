@@ -26,6 +26,10 @@ public class GeoDocService {
 		redisTemplate.opsForValue().set(placeId, fileLocation);
 	}
 	
+	public String isDocAssiciated(String placeId) {
+		return redisTemplate.opsForValue().get(placeId);
+	}
+	
 	public DocumentDetail getAssociatedDoc(PlacesResults result, String timeInMillis, String timeZone) {
 		String document = redisTemplate.opsForValue().get(result.getId());
 		DocumentDetail docDetail = null;

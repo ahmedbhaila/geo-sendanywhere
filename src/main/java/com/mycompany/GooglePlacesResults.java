@@ -39,6 +39,13 @@ class PlacesResults {
 	String id;
 	String vicinity;
 	Geometry geometry;
+	boolean associated;
+	public boolean isAssociated() {
+		return associated;
+	}
+	public void setAssociated(boolean associated) {
+		this.associated = associated;
+	}
 	public String getName() {
 		return name;
 	}
