@@ -51,6 +51,7 @@ html, body, #map-canvas {
 	var map;
 	var infowindow;
 	var markers = [];
+	var documents = [];
 	
 	$(function(){
         $('.doclinks').on('click', function(){
@@ -133,37 +134,50 @@ html, body, #map-canvas {
 	}
 	
 	function createMarker(obj) {
+		console.log(obj);
+		
 		var lat_lng = new google.maps.LatLng(obj.clientLocation.split(",")[0],obj.clientLocation.split(",")[1]);
 		map.setCenter(lat_lng);
 		
+		documents = [];		
+		
 		var image = 'images/doc-icon.png';
-		var marker = new google.maps.Marker({
-			map : map,
-			position : lat_lng,
-			icon:image
-		});
 		
-		markers.push(marker);
-		
-		$(".list-group").empty();
 		$.each(obj.documentDetail, function(i,doc){
-			//$(".list-group").append("<a href="+doc.url+" class='list-group-item' target='_blank'>"+doc.name+"</a>");
-			var mylink = "<a class='doclinks list-group-item' target='_blank' data-doc-name=" + doc.name + " data-doc-url=" + doc.webLink + " data-doc-client=" + GetURLParameter('clientId') + ">"+doc.name+"</a>";
-			console.log("My link is " + mylink);
-			//$(".list-group").append("<a href='#' class='doclinks list-group-item' target='_blank' data-doc-name=" + doc.name + " + data-doc-url=" + doc.webLink + " + data-client=" + GetURLParameter('clientId') + ">"+doc.name+"</a>");
-			$(".list-group").append(mylink);
+			var marker = new google.maps.Marker({
+				map : map,				
+				icon:image
+			});
+			
+			marker.setPlace({
+			      placeId: doc.placeId,
+			      location: new google.maps.LatLng(doc.location.split(",")[0],doc.location.split(",")[1])
+			    });
+			
+			markers.push(marker);
+			documents[doc.placeId] = doc;
+			console.log(marker);
+			
+			google.maps.event.addListener(marker, 'click', function() {
+				var doc = documents[marker.place.placeId];
+				var date = new Date(doc.time *1000);
+	 			$(".list-group").empty();
+	 			var mylink = "<a class='doclinks list-group-item' target='_blank' data-doc-name=" + doc.name + " data-doc-url=" + doc.webLink + " data-doc-client=" + GetURLParameter('clientId') + ">"+
+	 					"Place: "+doc.placeName+"<br/>"+
+	 					"Document: "+doc.name+"<br/>"+
+	 					"Date: "+date.toDateString()+
+	 				"</a>";
+	 				
+	 			$(".list-group").append(mylink);
+				
+	 			$("#inputFile").val("Temporary File Name");
+	 			infowindow.setContent($("#linkModal").html());
+	 		    infowindow.open(map, this);
+				
+			});
+			
 		});
 		
-		
-		
-		google.maps.event.addListener(marker, 'click', function() {
-			console.log(marker.getPosition());
-			
-			$("#inputFile").val("Temporary File Name");
-			infowindow.setContent($("#linkModal").html());
-		    infowindow.open(map, this);
-			
-		});
 	}
 	
 	function clearAllMarkers(){
