@@ -58,8 +58,8 @@ public class GeoDocService {
 			setupDocumentMap(profileName,latlng, docs);
 			// start async process for these files to be downloaded
 			docs.stream().filter(Objects::nonNull).forEach(doc -> sendAnywhereService.prepareTransfer(profileName, doc));
-			docs.forEach(doc -> System.out.println("Weblink is " + doc.getWebLink()));
 		}
+		docs.forEach(doc -> System.out.println("Weblink is " + doc.getWebLink()));
 		if(docs.size() != 0) {
 			return documentStoreMap.getDocumentMap().get(profileName).getDocumentDetail().size() > 0;
 		}
