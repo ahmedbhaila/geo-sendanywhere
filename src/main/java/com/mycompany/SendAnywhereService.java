@@ -118,8 +118,11 @@ public class SendAnywhereService {
 	public Future<String> startTransfer(String profileName, String transferURL, String name) {
 		try{
 			if(name.startsWith("http")) {
+				
+				// parse file extension
+				String ext = name.substring(name.lastIndexOf("."), name.length());
 				// download the file
-				String tempFilename = "temp_" + String.valueOf(System.currentTimeMillis()) + random.nextInt();
+				String tempFilename = "temp_" + String.valueOf(System.currentTimeMillis()) + random.nextInt() + ext;
 				FileUtils.copyURLToFile(new URL(name), new File(tempFilename));
 				name = tempFilename;
 			}
