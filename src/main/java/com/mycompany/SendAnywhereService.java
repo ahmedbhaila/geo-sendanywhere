@@ -11,6 +11,7 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -37,6 +38,9 @@ public class SendAnywhereService {
 	
 	@Autowired
 	DocumentMapStore mapStore;
+	
+	@Autowired
+	RedisTemplate<String, String> redisTemplate;
 	
 	
 	//public static Map<String, List<String>> fileTransferMap = new HashMap<String, List<String>>();
@@ -115,7 +119,7 @@ public class SendAnywhereService {
 	}
 	
 	@Async
-	public Future<String> startTransfer(String profileName, String transferURL, String name) {
+	public Future<String> startTransfer(String profileName, String transferURL, String name, String docIndex) {
 		try{
 			if(name.startsWith("http")) {
 				
@@ -142,6 +146,17 @@ public class SendAnywhereService {
 		System.out.println("Removing document from list");
 		DocumentResult docs = mapStore.documentMap.get(profileName);
 		docs.setDocumentDetail(docs.getDocumentDetail().stream().filter(d -> !d.getWebLink().equals(transferURL)).collect(Collectors.toSet()));
+		String documentsKey = profileName + ":document";
+		redisTemplate.opsForHash().delete(documentsKey + docIndex, "name");
+		redisTemplate.opsForHash().delete(documentsKey + docIndex, "placeId");
+		redisTemplate.opsForHash().delete(documentsKey + docIndex, "placeName");
+		redisTemplate.opsForHash().delete(documentsKey + docIndex, "time");
+		redisTemplate.opsForHash().delete(documentsKey + docIndex, "timeZone");
+		redisTemplate.opsForHash().delete(documentsKey + docIndex, "url");
+		redisTemplate.opsForHash().delete(documentsKey + docIndex, "webLink");
+		redisTemplate.opsForHash().delete(documentsKey + docIndex, "latlng");
+		redisTemplate.opsForHash().delete(documentsKey + docIndex, "index");
+	
 		
 		return new AsyncResult<String>(result);
 	}

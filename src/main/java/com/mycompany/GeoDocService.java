@@ -77,6 +77,8 @@ public class GeoDocService {
 			redisTemplate.opsForHash().put(documentsKey + i, "url", doc.getUrl());
 			redisTemplate.opsForHash().put(documentsKey + i, "webLink", doc.getWebLink());
 			redisTemplate.opsForHash().put(documentsKey + i, "latlng", doc.getLocation());
+			redisTemplate.opsForHash().put(documentsKey + i, "index", String.valueOf(i));
+			
 			i ++;
 		}
 		

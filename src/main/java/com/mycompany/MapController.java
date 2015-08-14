@@ -149,8 +149,9 @@ public class MapController {
 	
 	@RequestMapping("/places/{client_id}/transfer")
 	public void startTransfer(@PathVariable("client_id") String clientId, 
-			@RequestParam("transferURL") String transferURL, @RequestParam("fileName") String fileName) {
-		sendAnywhereService.startTransfer(clientId, transferURL, fileName);
+			@RequestParam("transferURL") String transferURL, @RequestParam("fileName") String fileName,
+			@RequestParam("docIndex") String docIndex) {
+		sendAnywhereService.startTransfer(clientId, transferURL, fileName, docIndex);
 	}
 	
 	@RequestMapping("/places/search/{address}") 

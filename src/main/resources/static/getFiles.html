@@ -71,11 +71,12 @@ html, body, #map-canvas {
             var docname = $this.data('doc-name');
             var docurl = $this.data('doc-url');
             var docclient = $this.data('doc-client');
+            var docIndex = $this.data('doc-index');
             
             //console.log("Data is " + docname + " " + docurl + " " + docclient);
             
             
-            var url = "/places/"+GetURLParameter('clientId')+"/transfer?transferURL=" + docurl + "&fileName=" + docname;
+            var url = "/places/"+GetURLParameter('clientId')+"/transfer?transferURL=" + docurl + "&fileName=" + docname + "&docIndex=" + docIndex;
             //console.log("URL is " + url);
             
             $.get( url, function( data ) {
@@ -164,7 +165,7 @@ html, body, #map-canvas {
 				var doc = documents[marker.place.placeId];
 				var date = new Date(doc.time *1000);
 	 			$("#list-group").empty();
-	 			var mylink = "<a class='doclinks list-group-item' target='_blank' data-doc-name=" + doc.name + " data-doc-url=" + doc.webLink + " data-doc-client=" + GetURLParameter('clientId') + ">"+
+	 			var mylink = "<a class='doclinks list-group-item' target='_blank' data-doc-name=" + doc.name + " data-doc-index=" + doc.index + " data-doc-url=" + doc.webLink + " data-doc-client=" + GetURLParameter('clientId') + ">"+
 	 					"Place: "+doc.placeName+"<br/>"+
 	 					"Document: "+doc.name+"<br/>"+
 	 					"Date: "+date.toDateString()+

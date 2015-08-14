@@ -9,7 +9,14 @@ public class DocumentDetail {
 	private String url;
 	private String webLink;
 	private String location;
+	private String index;
 	
+	public String getIndex() {
+		return index;
+	}
+	public void setIndex(String index) {
+		this.index = index;
+	}
 	public String getLocation() {
 		return location;
 	}

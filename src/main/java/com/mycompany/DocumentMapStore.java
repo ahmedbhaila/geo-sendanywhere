@@ -41,6 +41,7 @@ public class DocumentMapStore {
 			detail.setTimeZone(ops.get(documentsKey + i, "timeZone"));
 			detail.setUrl(ops.get(documentsKey + i, "url"));
 			detail.setWebLink(ops.get(documentsKey + i, "webLink"));
+			detail.setIndex(ops.get(documentsKey + i, "index"));
 			
 			documentDetails.add(detail);
 			
