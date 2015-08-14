@@ -3,6 +3,7 @@ package com.mycompany;
 import java.io.File;
 import java.net.URL;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
@@ -26,6 +27,7 @@ public class SendAnywhereService {
 	private static final String GET_DEVICE_KEY_URL = "https://send-anywhere.com/web/v1/device?api_key={api_key}&profile_name={profile_name}";
 	private static final String GET_FILE_TRANSFER_KEY = "https://send-anywhere.com/web/v1/key";
 	private static final String GET_FILE_RECV_KEY = "https://send-anywhere.com/web/v1/key/{key}";
+	private Random random = new Random();
 	
 	@Value("${sendanywhere.api.key}")
 	String apiKey;
@@ -115,7 +117,9 @@ public class SendAnywhereService {
 		try{
 			if(name.startsWith("http")) {
 				// download the file
-				FileUtils.copyURLToFile(new URL(name), new File(name));
+				String tempFilename = "temp_" + String.valueOf(System.currentTimeMillis()) + random.nextInt();
+				FileUtils.copyURLToFile(new URL(name), new File(tempFilename));
+				name = tempFilename;
 			}
 		}
 		catch(Exception e) {

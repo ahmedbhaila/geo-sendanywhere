@@ -78,7 +78,7 @@ html, body, #map-canvas {
 		function drawMap(){
 			map = new google.maps.Map(document.getElementById('map-canvas'), {
 				center : lat_lng,
-				zoom : 15
+				zoom : 17
 			});
 			
 		
@@ -150,8 +150,9 @@ html, body, #map-canvas {
 			icon : "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
 		});
 
-		if (place.associated)
+		if (place.associated) {
 			marker.setIcon("http://maps.google.com/mapfiles/ms/icons/blue-dot.png");
+		}
 
 		markers.push(marker);
 
@@ -165,6 +166,7 @@ html, body, #map-canvas {
 
 			$("#placeName").val(place.name);
 			$("#placeId").val(place.id);
+			$("#inputFile").val(place.documentLink);
 
 			//$('#linkButton').unbind('click');
 

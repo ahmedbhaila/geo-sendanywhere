@@ -40,6 +40,13 @@ class PlacesResults {
 	String vicinity;
 	Geometry geometry;
 	boolean associated;
+	String documentLink;
+	public String getDocumentLink() {
+		return documentLink;
+	}
+	public void setDocumentLink(String documentLink) {
+		this.documentLink = documentLink;
+	}
 	public boolean isAssociated() {
 		return associated;
 	}

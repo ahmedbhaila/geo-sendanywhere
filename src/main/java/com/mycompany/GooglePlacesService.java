@@ -30,7 +30,13 @@ public class GooglePlacesService {
 		if(results.getStatusCode().equals(HttpStatus.OK)) {
 			places = new HashSet<PlacesResults>(results.getBody().getResults());
 		}
-		places.stream().forEach(p -> p.setAssociated(geoDocService.isDocAssiciated(p.getId()) == null ? false : true));
+		places.stream().forEach(p -> 
+			{
+				String document = geoDocService.isDocAssiciated(p.getId());
+				p.setAssociated(document == null ? false : true);
+				p.setDocumentLink(document);
+			}
+		);
 		return places;
 	}
 	
