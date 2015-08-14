@@ -95,6 +95,13 @@ html, body, #map-canvas {
 // 			});
 		}
 		
+		$('#srch-term').keydown(function (e){
+		    if(e.keyCode == 13){
+				e.preventDefault();
+				$("#btn_search").click();
+			}
+		})
+		
 		
 		$("#btn_search").click(function() {
 			var url = "/places/search/" + $("#srch-term").val();
