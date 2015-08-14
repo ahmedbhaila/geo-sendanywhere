@@ -92,6 +92,7 @@ public class SendAnywhereService {
 		if(key.getBody().getLink() != null) {
 			document.setUrl(key.getBody().getLink());
 			document.setWebLink(key.getBody().getWebLink());
+			System.out.println("****Document links *****" + document.getWebLink() + " " + document.getUrl());
 			
 			/*MultiValueMap<String, Object> parts = new LinkedMultiValueMap<String, Object>();
 			parts.add("file", new FileSystemResource(document.getName()));
@@ -108,6 +109,7 @@ public class SendAnywhereService {
 		else {
 			// delete this entry since SendAnywhere didnt respond with a link
 			mapStore.documentMap.get(profileName).getDocumentDetail().remove(document);
+			System.out.println("****NO LINKS WERE FOUND*******");
 		}
 		//return new AsyncResult<String>(result);		
 	}
