@@ -60,6 +60,27 @@ public class GeoDocService {
 			docs.stream().filter(Objects::nonNull).forEach(doc -> sendAnywhereService.prepareTransfer(profileName, doc));
 		}
 		docs.forEach(doc -> System.out.println("Weblink is " + doc.getWebLink()));
+		
+		// persist the results
+		String documentSummaryKey = profileName + ":summary";
+		String documentsKey = profileName + ":document";
+		redisTemplate.opsForHash().put(documentSummaryKey , "latlng", latlng);
+		redisTemplate.opsForHash().put(documentSummaryKey , "count", String.valueOf(docs.size()));
+		
+		int i = 0;
+		for (DocumentDetail doc : docs) {
+			redisTemplate.opsForHash().put(documentsKey + i, "name", doc.getName());
+			redisTemplate.opsForHash().put(documentsKey + i, "placeId", doc.getPlaceId());
+			redisTemplate.opsForHash().put(documentsKey + i, "placeName", doc.getPlaceName());
+			redisTemplate.opsForHash().put(documentsKey + i, "time", doc.getTime());
+			redisTemplate.opsForHash().put(documentsKey + i, "timeZone", doc.getTimeZone());
+			redisTemplate.opsForHash().put(documentsKey + i, "url", doc.getUrl());
+			redisTemplate.opsForHash().put(documentsKey + i, "webLink", doc.getWebLink());
+			redisTemplate.opsForHash().put(documentsKey + i, "latlng", doc.getLocation());
+			i ++;
+		}
+		
+		
 		if(docs.size() != 0) {
 			return documentStoreMap.getDocumentMap().get(profileName).getDocumentDetail().size() > 0;
 		}

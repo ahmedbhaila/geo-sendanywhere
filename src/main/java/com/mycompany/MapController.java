@@ -120,8 +120,8 @@ public class MapController {
 	@RequestMapping("/places/{client_id:.+}/documents")
 	@ResponseBody
 	public DocumentResult /*String*/  getDocuments(@PathVariable("client_id") String clientId) {
-		
-		return documentMapStore.getDocumentMap().get(clientId);
+		return documentMapStore.getDocumentResults(clientId);
+		//return documentMapStore.getDocumentMap().get(clientId);
 //		return 
 //				"{"+
 //				"\"clientLocation\": \"41.969388,-87.741871\","+

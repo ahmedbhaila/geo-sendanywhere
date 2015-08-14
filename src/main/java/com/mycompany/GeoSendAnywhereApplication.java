@@ -88,6 +88,7 @@ public class GeoSendAnywhereApplication {
 		return redisTemplate;
 	}
 	
+	
 	@Bean
 	public GeoDocService geoDocService() {
 		return new GeoDocService();
