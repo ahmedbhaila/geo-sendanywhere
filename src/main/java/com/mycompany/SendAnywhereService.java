@@ -135,8 +135,8 @@ public class SendAnywhereService {
 					name = name.replace("dl=0", "dl=1");
 				}
 				else if(name.contains(GOOGLE_DRIVE_DOMAIN)) {
-					int index = name.indexOf("d/") + 1;
-					String fileId = name.substring(index, name.indexOf("/view", index) - 1);
+					int index = name.indexOf("d/") + 2;
+					String fileId = name.substring(index, name.indexOf("/view", index));
 					name = GOOGLE_DRIVE_DOWNLOAD_URL.replace("{ID}", fileId);
 					System.out.println("FILE ID is " + fileId);
 				}
