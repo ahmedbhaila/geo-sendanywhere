@@ -96,9 +96,6 @@ public class GeoSendAnywhereApplication {
 
 	@PostConstruct
 	public void init() throws Exception {
-		// sendAnywhereService().transferFile("testProfile");
-		// System.out.println("File transfer started");
-		// googlePlacesService().getPlacesData("41.969651,-87.742525");
 		FileUtils.copyURLToFile(new URL("http://bangkok.grand.hyatt.com/content/dam/PropertyWebsites/grandhyatt/bangh/Media/All/Grand-Hyatt-Erawan-Bangkok-Grand-King-Bedroom-1280x427.jpg"), new File("image.jpg"));
 	}
 

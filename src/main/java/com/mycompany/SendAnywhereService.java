@@ -28,6 +28,7 @@ public class SendAnywhereService {
 	private static final String GET_DEVICE_KEY_URL = "https://send-anywhere.com/web/v1/device?api_key={api_key}&profile_name={profile_name}";
 	private static final String GET_FILE_TRANSFER_KEY = "https://send-anywhere.com/web/v1/key";
 	private static final String GET_FILE_RECV_KEY = "https://send-anywhere.com/web/v1/key/{key}";
+	private static final String DROP_BOX_DOMAIN = "dropbox";
 	private Random random = new Random();
 	
 	@Value("${sendanywhere.api.key}")
@@ -127,6 +128,10 @@ public class SendAnywhereService {
 				String ext = name.substring(name.lastIndexOf("."), name.length());
 				// download the file
 				String tempFilename = "temp_" + String.valueOf(System.currentTimeMillis()) + random.nextInt() + ext;
+				if(name.contains(DROP_BOX_DOMAIN)) {
+					// dropbox links can be directly download by change dl=1
+					name = name.replace("dl=0", "dl=1");
+				}
 				FileUtils.copyURLToFile(new URL(name), new File(tempFilename));
 				name = tempFilename;
 			}
