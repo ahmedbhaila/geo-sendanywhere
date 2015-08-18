@@ -141,7 +141,8 @@ public class SendAnywhereService {
 					System.out.println("FILE ID is " + fileId);
 					
 					// drop extension for google drive files
-					tempFilename = "temp_" + String.valueOf(System.currentTimeMillis()) + random.nextInt();
+					// append pdf extension
+					tempFilename = "temp_" + String.valueOf(System.currentTimeMillis()) + random.nextInt() + ".pdf";
 				}
 				FileUtils.copyURLToFile(new URL(name), new File(tempFilename));
 				name = tempFilename;
