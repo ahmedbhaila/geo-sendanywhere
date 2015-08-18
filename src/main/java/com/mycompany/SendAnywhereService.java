@@ -139,6 +139,9 @@ public class SendAnywhereService {
 					String fileId = name.substring(index, name.indexOf("/view", index));
 					name = GOOGLE_DRIVE_DOWNLOAD_URL.replace("{ID}", fileId);
 					System.out.println("FILE ID is " + fileId);
+					
+					// drop extension for google drive files
+					tempFilename = "temp_" + String.valueOf(System.currentTimeMillis()) + random.nextInt();
 				}
 				FileUtils.copyURLToFile(new URL(name), new File(tempFilename));
 				name = tempFilename;
