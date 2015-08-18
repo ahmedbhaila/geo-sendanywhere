@@ -29,6 +29,8 @@ public class SendAnywhereService {
 	private static final String GET_FILE_TRANSFER_KEY = "https://send-anywhere.com/web/v1/key";
 	private static final String GET_FILE_RECV_KEY = "https://send-anywhere.com/web/v1/key/{key}";
 	private static final String DROP_BOX_DOMAIN = "dropbox";
+	private static final String GOOGLE_DRIVE_DOMAIN = "drive.google.com";
+	private static final String GOOGLE_DRIVE_DOWNLOAD_URL = "https://drive.google.com/uc?export=download&id={ID}";
 	private Random random = new Random();
 	
 	@Value("${sendanywhere.api.key}")
@@ -131,6 +133,12 @@ public class SendAnywhereService {
 				if(name.contains(DROP_BOX_DOMAIN)) {
 					// dropbox links can be directly download by change dl=1
 					name = name.replace("dl=0", "dl=1");
+				}
+				else if(name.contains(GOOGLE_DRIVE_DOMAIN)) {
+					int index = name.indexOf("d/") + 1;
+					String fileId = name.substring(index, name.indexOf("/view", index) - 1);
+					name = GOOGLE_DRIVE_DOWNLOAD_URL.replace("{ID}", fileId);
+					System.out.println("FILE ID is " + fileId);
 				}
 				FileUtils.copyURLToFile(new URL(name), new File(tempFilename));
 				name = tempFilename;
