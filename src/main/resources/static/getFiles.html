@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-<script src="js/test.js"></script>
 
  
 <!-- <link rel="stylesheet" href="https://code.jquery.com/mobile/git/jquery.mobile-git.min.css" /> -->
@@ -23,8 +22,6 @@
 <!-- google map API -->
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
 
-
-<script src="js/infobox.js"></script>
 
 <link href="css/test.css"></link>
 
@@ -167,14 +164,13 @@ html, body, #map-canvas {
 	 			$("#list-group").empty();
 	 			var mylink = "<a class='doclinks list-group-item' target='_blank' data-doc-name=" + doc.name + " data-doc-index=" + doc.index + " data-doc-url=" + doc.webLink + " data-doc-client=" + GetURLParameter('clientId') + ">"+
 	 					"Place: "+doc.placeName+"<br/>"+
-	 					"Document: "+doc.name+"<br/>"+
 	 					"Date: "+date.toDateString()+
 	 				"</a>";
 	 				
 	 			$("#list-group").append(mylink);
 				
 	 			$("#inputFile").val("Temporary File Name");
-	 			infowindow.setContent($("#linkModal").html());
+	 			infowindow.setContent($("#list-group").html());
 
 
 	 			infowindow.open(map, this);

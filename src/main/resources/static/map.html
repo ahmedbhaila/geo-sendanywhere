@@ -49,60 +49,58 @@ html, body, #map-canvas {
 }
 </style>
 
-
 <script type="text/javascript">
-
-
+	
 	var map;
 	var infowindow;
 	var markers = [];
-	
+
 	var lat_lng = new google.maps.LatLng(24.8484681, 67.00376310000001);
-	
+	var current_lat_lng;
+
 	function initialize() {
-		
-		
+
 		//var lat_lng = new google.maps.LatLng(24.848702799999, 67.0036843);
-		if(navigator.geolocation) {
-		    navigator.geolocation.getCurrentPosition(function(position) {
-		    	lat_lng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-		    	console.log(lat_lng);
-		    	drawMap();
-		    });
-		}
-		else{
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(function(position) {
+				current_lat_lng = lat_lng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+				drawMap();
+			}, function() {
+				console.log('Error occurred. Error code: ' + error.code);
+				drawMap();
+			});
+			
+		} else {
 			drawMap();
 		}
 		//map.setCenter(lat_lng);
-				
-		function drawMap(){
+
+		function drawMap() {
 			map = new google.maps.Map(document.getElementById('map-canvas'), {
 				center : lat_lng,
 				zoom : 17
 			});
-			
-		
+
 			getPlaces(lat_lng);
-			
+
 			google.maps.event.addListener(map, 'dragend', function() {
-			    console.log(map.getCenter());
-			    getPlaces(map.getCenter());
+				console.log(map.getCenter());
+				getPlaces(map.getCenter());
 			});
-			
-// 			google.maps.event.addListener(map, 'zoom_changed', function() {
-// 			    console.log(map.getCenter());
-// 			    getPlaces(map.getCenter());
-// 			});
+
+			// 			google.maps.event.addListener(map, 'zoom_changed', function() {
+			// 			    console.log(map.getCenter());
+			// 			    getPlaces(map.getCenter());
+			// 			});
 		}
-		
-		$('#srch-term').keydown(function (e){
-		    if(e.keyCode == 13){
+
+		$('#srch-term').keydown(function(e) {
+			if (e.keyCode == 13) {
 				e.preventDefault();
 				$("#btn_search").click();
 			}
 		})
-		
-		
+
 		$("#btn_search").click(function() {
 			var url = "/places/search/" + $("#srch-term").val();
 			$.get(url, function(data) {
@@ -112,39 +110,40 @@ html, body, #map-canvas {
 			return true;
 		});
 	}
-	
-	
-	
-	function getPlaces(lat_lng)
-	{
-		
-// 		var request = {
-// 				location : lat_lng,
-// 				radius : 50
-// 			};
-			
-			infowindow = new google.maps.InfoWindow();
-			
-			
-			//var service = new google.maps.places.PlacesService(map);
-			//service.nearbySearch(request, callback);
-			
-			var url = "/places/"+lat_lng.lat()+","+lat_lng.lng();
-			$.get( url, function( data ) {
-					console.log(data);
-					callback(data)
-				});
-	}
 
-	
+	function getPlaces(lat_lng) {
+
+		// 		var request = {
+		// 				location : lat_lng,
+		// 				radius : 50
+		// 			};
+
+		infowindow = new google.maps.InfoWindow();
+
+		//var service = new google.maps.places.PlacesService(map);
+		//service.nearbySearch(request, callback);
+
+		var url = "/places/" + lat_lng.lat() + "," + lat_lng.lng();
+		$.get(url, function(data) {
+			console.log(data);
+			callback(data)
+		});
+	}
 
 	function callback(results) {
 		clearAllMarkers();
+		if (current_lat_lng)
+			map.setCenter(current_lat_lng);
 		for (var i = 0; i < results.length; i++) {
-			if(i == 0)
-				map.setCenter(new google.maps.LatLng(results[i].geometry.location.lat, results[i].geometry.location.lng));
+// 			if (i == 0)
+// 				map.setCenter(new google.maps.LatLng(
+// 						results[i].geometry.location.lat,
+// 						results[i].geometry.location.lng));
 			createMarker(results[i]);
 		}
+
+		if (current_lat_lng)
+			markCurrentLocation(current_lat_lng);
 	}
 
 	function createMarker(place) {
@@ -158,7 +157,8 @@ html, body, #map-canvas {
 		});
 
 		if (place.associated) {
-			marker.setIcon("http://maps.google.com/mapfiles/ms/icons/blue-dot.png");
+			marker
+					.setIcon("http://maps.google.com/mapfiles/ms/icons/blue-dot.png");
 		}
 
 		markers.push(marker);
@@ -196,9 +196,24 @@ html, body, #map-canvas {
 			});
 
 		});
+
+	}
+
+	function markCurrentLocation(lat_lng) {
+		console.log("Current location");
+
+		var marker = new google.maps.Marker({
+			map : map,
+			position : lat_lng,
+			title : "Current Location",
+			icon : "images/current.png"
+		});
+		markers.push(marker);
 	}
 
 	function clearAllMarkers() {
+		console.log("clearAllMarkers");
+
 		for (var i = 0; i < markers.length; i++) {
 			markers[i].setMap(null);
 		}
