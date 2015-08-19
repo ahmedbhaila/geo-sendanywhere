@@ -162,7 +162,8 @@ html, body, #map-canvas {
 		if (place.associated) {
 			marker.setIcon("http://maps.google.com/mapfiles/ms/icons/blue-dot.png");
 		}
-
+		
+		marker.place = place;
 		markers.push(marker);
 
 		google.maps.event.addListener(marker, 'click', function() {
@@ -190,10 +191,12 @@ html, body, #map-canvas {
 					url : "/places/associate",
 					contentType : "application/json; charset=utf-8",
 					data : JSON.stringify(data),
-					success : function() {
+					success : function(data) {
 						//alert("File Linked successfully !!! ");
 						infowindow.close();
 						marker.setIcon("http://maps.google.com/mapfiles/ms/icons/blue-dot.png");
+						marker.place.documentLink = $.parseJSON(this.data).fileLocation;
+						console.log(marker.place.documentLink);
 					}
 				});
 			});
